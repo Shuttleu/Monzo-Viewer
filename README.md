@@ -45,15 +45,15 @@ If you are missing anything, follow their guides on how to install
 * [SQLite3](https://www.sqlite.org/index.html)
 * [NodeJS](https://nodejs.org/en/download/)
 * [Yarn](https://classic.yarnpkg.com/en/docs/install)
-* [Ruby](https://guides.rubyonrails.org/getting_started.html)
+* [Rails](https://guides.rubyonrails.org/getting_started.html)
 
 Once all of the above are installed and ready to go, clone this repository or download a zip and extract to a location of your choosing.
 
-Once in this location, open a terminal /command prompt and type
+Once in this location, open a terminal / command prompt and type
 
 ```bundle install```
 
-This will download and install all the required gems for this application, once this has been finished, run: 
+This will download and install all the required gems for this application, once this has finished, run: 
 
 ```bin/rails server```
 
@@ -64,14 +64,14 @@ The app will now be running and accessible on ```localhost:3000```. (As of the i
 First you must create an account, nothing more than a username and password is required.
 
 Afterwards, the first run setup will take you through setting up an OAuth Client on the monzo dev portal. 
-Please be sure to follow the instructions when setting up the OAuth Client on, especially the redirect URL. The name and description can be anything you like, but you **must** set the redirect URL to what the app gives you.
+Please be sure to follow the instructions when setting up the OAuth Client, especially the redirect URL. The name and description can be anything you like, but you **must** set the redirect URL to what the app gives you.
 When authorising the app, please also ensure you open the email from the device you are setting the app up on, if you open it on another device, you will have to re-authenticate.
 
 After the app has been authenticated, you will have to allow access via the Monzo app, then you can click the button to download all account data.
 
 # Transfer money to savings pot
 
-If a transaction is a debit (that is, you are receiving money),the previous transaction had a positive balance and your current balance is above the previous transactions balance, there will be an option to transfer the previous transactions balance to a savings pot. By default, this pot is set to the first pot on your account, however you can change this to be watever pot you like on the settings page.
+If a transaction is a debit (that is, you are receiving money), the previous transaction had a positive balance and your current balance is above the previous transactions balance, there will be an option to transfer the previous transactions balance to a savings pot. By default, this pot is set to the first pot on your account, however you can change this to be whatever pot you like on the settings page.
 
 If you wish, you can have this automated if you set a threshold above £0.00 and have a way of running the ```rake accounts:update``` command.
 Officially this is supported by using the whenever gem. Running ```whenever --update-crontab --set environment='development'``` will update your crontab to run the account update at regular intervals.
@@ -80,6 +80,8 @@ By default this is set to run every hour and will check the previous two hours w
 # Updating accounts
 
 If you do not/cannot run the sceduled task, you can update the accounts and transactions from the settings page, this will update everything going back 60 days. If you have not updated the accounts for longer than this, it is recommended that yu re-run the first run setup.
+
+Please note that you cannot take advantage of the automatic pot deposits if you update using this method.
 
 # Re-running the first run setup
 
