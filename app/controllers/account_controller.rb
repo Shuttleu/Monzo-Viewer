@@ -342,10 +342,11 @@ class AccountController < ApplicationController
                     user_account.threshold = 0
                     user_account.threshold_offset = 0
                     user_account.save
-                    transactions = monzo.get_transactions(account["id"], Time.new(2010, 1, 1, 0, 0, 0).strftime('%FT%TZ'))
+                    temp_time = monzo.get_transactions(account["id"], Time.new(2010, 1, 1, 0, 0, 0).strftime('%FT%TZ'))
                 else
-                    transactions = monzo.get_transactions(account["id"], Time.new.prev_month.at_beginning_of_day.strftime('%FT%TZ'))
+                    temp_time = DateTime.now-60
                 end
+                transactions = monzo.get_transactions(account["id"], temp_time.strftime('%FT%TZ'))
                 transactions.each do |transaction|
                     if user_accounts.find_by("account_id" => account["id"]).transactions.where("transaction_id" => transaction["id"]).count == 0
                         transaction_name = transaction["merchant"] != nil ? transaction["merchant"]["name"] : transaction["description"]
