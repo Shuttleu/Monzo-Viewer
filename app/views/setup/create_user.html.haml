@@ -1,0 +1,8 @@
+= render "nav"
+.container
+    .row
+        .col
+            .jumbotron.text-center
+                %h1.display-4
+                    %a #{@title}!
+                = link_to @button_text, @link, class: "btn btn-primary"

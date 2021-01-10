@@ -1,0 +1,15 @@
+= render "nav"
+.container
+    .row
+        .col
+            .jumbotron.text-center
+                %h1.display-4
+                    %a Setting up the OAuth details
+                %p Fill in the details below from the OAuth client in the dev portal
+                = form_with(url: authorisation_setup_path(), local: true) do |new_user_form|
+                    .mb-3
+                        = new_user_form.text_field :client_id, value: @user.client_id, placeholder: "Client ID", class: "form-control"
+                    .mb-3
+                        = new_user_form.text_field :client_secret, value: @user.client_secret, placeholder: "Client Secret", class: "form-control"
+                    .mb-3
+                        = new_user_form.submit class: "btn btn-primary"

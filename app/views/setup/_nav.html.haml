@@ -1,0 +1,12 @@
+%nav.navbar.sticky-top.navbar-expand-lg.navbar-light.bg-light
+  .collapse.navbar-collapse
+    %ul.navbar-nav
+      - if @nav == "logged_out"
+        %li.nav-item
+          %a.nav-link(href="#{create_account_path()}") Create Account
+        %li.nav-item
+          %a.nav-link(href="#{login_path()}") Login
+      - else
+        %li.nav-item
+          %a.nav-link(href="#{logout_path()}") Logout
+%p

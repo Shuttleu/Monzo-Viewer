@@ -1,0 +1,14 @@
+= render "nav"
+.container
+    .row
+        .col
+            .jumbotron
+                .container
+                    .row
+                        - @accounts.each do |account|
+                            .col
+                                .card.mx-auto(style="width: 18rem;")
+                                    .card-body
+                                        %h4.card-title= account.name
+                                        %p.card-text Balance: #{number_to_currency(account.balance/100.0, unit: "£")}
+                                        %a.btn.btn-primary.btn-lg(href="#{account_path(account)}" role="button") View Account

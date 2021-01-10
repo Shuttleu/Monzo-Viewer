@@ -1,0 +1,13 @@
+= render "nav"
+.container
+    .row
+        .col
+            .jumbotron.text-center
+                %h1.display-4
+                    %a Welcome
+                %p Lets get started by creating an account
+                = form_with(url: create_user_path(), local: true) do |new_user_form|
+                    %p= new_user_form.text_field :username, placeholder: "Username"
+                    %p= new_user_form.password_field :password, placeholder: "Password"
+                    %p= new_user_form.password_field :password_confirmation, placeholder: "Confirm Password"
+                    %p= new_user_form.submit class: "btn btn-primary"

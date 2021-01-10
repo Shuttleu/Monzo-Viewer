@@ -1,0 +1,17 @@
+= render "nav"
+.container
+    .row
+        .col
+            .jumbotron.text-center
+                %h1.display-4
+                    %a Setting up the Dev Portal
+                %p To get started you must first set up an OAuth client in the Monzo Dev Portal, click the button below to go there now.
+                %p= link_to "Monzo Dev Portal", "https://developers.monzo.com", target: :_blank, class: "btn btn-primary"
+                %p Sign in with your Monzo accouusing email verification.
+                %p To set up a new OAuth client, you must:
+                %ul
+                    %li Set a name and description
+                    %li Confidentiality must be set to "Confidential"
+                    %li Redirect URL must be set to "#{complete_authorisation_url()}"
+                %p Once you have set up a OAuth Client, click continue below
+                = link_to "Continue", oauth_details_path(), class: "btn btn-primary"

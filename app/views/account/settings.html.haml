@@ -1,0 +1,23 @@
+= render "nav"
+.container
+    .row
+        .col
+            .jumbotron
+                %h1.display-4
+                    Settings
+                %p= link_to "Re-run Account Authorisation (incase the app becomes deauthorised)", dev_portal_path, class: "text-secondary"
+                %hr.my-4
+                - @accounts.each_with_index do |account, i|
+                    %h4 #{account.name}
+                    %p
+                        Savings Pot: 
+                        %select{"class" => "form-control savings-pot", "data-account" => "#{account.id}", "id" => "savings-pot#{i}", "data-number"=> "#{i}"}
+                            = options_for_select(@pots[account.id], "#{account.savings}")
+                    %p
+                        Automatic transfer threshold:
+                        £ #{number_field_tag "threshold"+i.to_s, number_to_currency(@transfer_threshold[account.id]/100.0, unit: "", delimiter: ""), step: 0.01, min: 0, class: "form-control savings-pot", "data-number": "#{i}"}
+                    %p
+                        Amount to leave on transfer:
+                        £ #{number_field_tag "threshold_leave"+i.to_s, number_to_currency(@threshold_offset[account.id]/100.0, unit: "", delimiter: ""), step: 0.01, min: 0, class: "form-control savings-pot", "data-number": "#{i}"}
+                    %hr.my-4
+                = link_to "Update Accounts", update_accounts_path, class: "btn btn-primary btn-lg"

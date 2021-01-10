@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  pot_id: 1
+  target: 1
+  for: MyString
+
+two:
+  pot_id: 1
+  target: 1
+  for: MyString

@@ -1,0 +1,27 @@
+@import "bootstrap";
+html {
+    scroll-behavior: smooth;
+}
+
+#acc-name-edit{
+    font-size: 3.5rem;
+}
+#acc-name + #acc-name-input {
+    display: none;
+}
+.pot{
+    padding: 1em;
+}
+.card{
+    width: 18rem;
+}
+.pages{
+    padding: 5px;
+}
+#transactions{
+    padding-top: 60px;
+}
+
+.table th{
+    text-align: left;
+}

@@ -1,0 +1,10 @@
+= render "nav"
+.container
+    .row
+        .col
+            .jumbotron.text-center
+                %h1.display-4
+                    %a Time to authorise!
+                %p Details Saved, Time to authorise
+                %p= link_to "Authorise The App", "https://auth.monzo.com/?client_id=#{@user.client_id}&redirect_uri=#{complete_authorisation_url()}&response_type=code&state=somestate", class: "btn btn-primary"
+                %p After you have authorised this app, it will redirect you to back here.

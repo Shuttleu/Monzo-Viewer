@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  access_token: MyString
+  client_id: MyString
+  refresh_token: MyString
+  client_secret: MyString
+
+two:
+  access_token: MyString
+  client_id: MyString
+  refresh_token: MyString
+  client_secret: MyString

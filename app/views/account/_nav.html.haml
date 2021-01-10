@@ -1,0 +1,17 @@
+%nav.navbar.sticky-top.navbar-expand-lg.navbar-light.bg-light
+  %button.navbar-toggler(type= "button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation")
+    %span.navbar-toggler-icon
+  .collapse.navbar-collapse#navbarNavDropdown
+    %ul.navbar-nav
+      %li.nav-item.active.dropdown
+        %a.nav-link.dropdown-toggle(href="accounts_pa" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+          Accounts
+        .dropdown-menu(aria-labelledby="navbarDropdownMenuLink")
+          = link_to "All Accounts", accounts_path(), class: "dropdown-item"
+          - @accounts.each do |account|
+            = link_to account.name, account_path(account), class: "dropdown-item"
+      %li.nav-item
+        = link_to "Settings", user_settings_path(), class: "nav-link"
+      %li.nav-item
+        = link_to "Logout", logout_path(), class: "nav-link"
+%p

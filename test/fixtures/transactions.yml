@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  account_id: MyString
+  day: 2020-01-17
+  payee: MyString
+  amount: 1
+  balance: 1
+
+two:
+  account_id: MyString
+  day: 2020-01-17
+  payee: MyString
+  amount: 1
+  balance: 1
