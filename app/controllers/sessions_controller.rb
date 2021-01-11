@@ -27,8 +27,6 @@ class SessionsController < ApplicationController
                 return
             end
         end
-        redirect_to login_error_path
-        return
     end
 
     def logout
