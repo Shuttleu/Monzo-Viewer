@@ -13,12 +13,11 @@ class SetupController < ApplicationController
             redirect_to login_path
             return
         end
-        @nav = "logged_in"
-        @user = User.where("cookie" => cookie).last
-        #@user.user_id = params["owner_id"]
-        @user.client_id = params["client_id"]
-        @user.client_secret = params["client_secret"]
-        @user.save
+        user = User.find_by("cookie" => cookie)
+        user.client_id = params["client_id"]
+        user.client_secret = params["client_secret"]
+        user.save
+        @client_id = params["client_id"]
     end
 
     def dev_portal
@@ -27,7 +26,6 @@ class SetupController < ApplicationController
             redirect_to login_path
             return
         end
-        @nav = "logged_in"
     end
 
     def create_account
@@ -45,7 +43,7 @@ class SetupController < ApplicationController
             redirect_to login_path
             return
         end
-        @user = User.where("cookie" => cookie).last
+        @user = User.find_by("cookie" => cookie)
     end
 
     def create_user
@@ -62,6 +60,7 @@ class SetupController < ApplicationController
                 @title = "Success"
                 @link = dev_portal_path
                 @button_text = "Continue"
+                @nav = ""
             end
         else
             @title = "Error, User #{params["username"]} already exists!"
@@ -71,7 +70,6 @@ class SetupController < ApplicationController
     end
 
     def complete_authorisation
-        @nav = "logged_in"
         cookie = check_cookie
         if cookie == "cookie_error"
             redirect_to login_path
@@ -81,7 +79,8 @@ class SetupController < ApplicationController
         begin
             refresh = JSON.parse(RestClient.post("https://api.monzo.com/oauth2/token", {grant_type: "authorization_code", client_id: user.client_id, client_secret: user.client_secret, redirect_uri: complete_authorisation_url(), code: params[:code]}).body)
         rescue => e
-            false
+            render authorisation_error
+            return
         end
         user.accounts.destroy_all
         user.access_token = refresh["access_token"]

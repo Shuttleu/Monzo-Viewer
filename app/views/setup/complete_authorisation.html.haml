@@ -7,4 +7,4 @@
                     %a Authorisation Complete
                 %p Next we will download all transactions.
                 %p IMPORTANT: You must authorise this app on the Monzo app before clicking the button below!
-                = link_to "Download All Data", "#{force_update_accounts_path("from_start")}", class: "btn btn-primary"
+                = link_to "Download All Data", force_update_accounts_path("from_start"), class: "btn btn-primary"

@@ -10,13 +10,13 @@
                             .card-body
                                 .progress
                                     - @targets.each_with_index do |target, i|
-                                        .progress-bar(class="bg-#{@colours[i%6]}" role="progressbar" style="width: #{target[1]}%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="0")
+                                        .progress-bar{"class" => "bg-#{@colours[i%6]}", "role" => "progressbar", "style" => "width: #{target[1]}%", "aria-valuenow" => "0", "aria-valuemin" => "0", "aria-valuemax" => "0"}
 
                                 %p
                                 - @pot.targets.each_with_index do |target, i|
                                     %p
                                         %a #{target.for}: 
-                                        %a(class="text-#{@colours[i%6]}")= number_to_currency(@target_comp[target.id.to_s], unit: "£")
+                                        %a{"class" => "text-#{@colours[i%6]}"} #{number_to_currency(@target_comp[target.id.to_s], unit: "£")}
                                         %a.text-secondary  / #{number_to_currency(target.target/100.0, unit: "£")}
                                         = link_to "clear", delete_target_path(params["id"], params["potid"], target.id), class: "material-icons text-danger"
                                 = form_with(url: create_target_path, local: true) do |new_user_form|

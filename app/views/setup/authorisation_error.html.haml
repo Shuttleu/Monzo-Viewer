@@ -1,0 +1,9 @@
+= render "nav"
+.container
+    .row
+        .col
+            .jumbotron.text-center
+                %h1.display-4
+                    %a Error Authorising!
+                %p Something when wrong while authorising, please try again
+                %p= link_to "Go Back", authorisation_setup_path, class: "btn btn-primary"

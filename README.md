@@ -79,7 +79,7 @@ By default this is set to run every hour and will check the previous two hours w
 
 # Updating accounts
 
-If you do not/cannot run the sceduled task, you can update the accounts and transactions from the settings page, this will update everything going back 60 days. If you have not updated the accounts for longer than this, it is recommended that yu re-run the first run setup.
+If you do not/cannot run the sceduled task, you can update the accounts and transactions from the settings page, this will update everything going back 60 days. If you have not updated the accounts for longer than this, it is recommended that you re-run the first run setup.
 
 Please note that you cannot take advantage of the automatic pot deposits if you update using this method.
 

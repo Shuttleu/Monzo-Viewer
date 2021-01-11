@@ -6,7 +6,7 @@
                 %h1.display-4
                     %a Welcome
                 %p Login
-                = form_with(url: login_submit_path, local: true) do |new_user_form|
+                = form_with(url: login_submit_path) do |new_user_form|
                     %p= new_user_form.text_field :username, placeholder: "Username"
                     %p= new_user_form.password_field :password, placeholder: "Password"
                     %p= new_user_form.submit class: "btn btn-primary"

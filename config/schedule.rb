@@ -20,5 +20,5 @@
 # Learn more: http://github.com/javan/whenever
 
 every 1.hour do
-    rake 'accounts:update[2]'
+    rake 'accounts:update'
 end

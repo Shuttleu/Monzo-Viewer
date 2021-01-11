@@ -24,9 +24,11 @@ class SessionsController < ApplicationController
                 user.save
                 cookies.signed[:login] = user.cookie
                 redirect_to accounts_path
+                return
             end
         end
-        puts "Invalid Password"
+        redirect_to login_error_path
+        return
     end
 
     def logout

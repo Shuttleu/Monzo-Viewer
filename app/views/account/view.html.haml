@@ -4,15 +4,15 @@
         .col
             .jumbotron
                 %h1.display-4
-                    %a#acc-name= @account.name
-                    %input#acc-name-input(type="text" value="#{@account.name}")
-                    %i.search.material-icons#acc-name-edit(data-acc="#{@account.id}") edit
+                    %a#acc-name #{@account.name}
+                    %input#acc-name-input{"type" => "text", "value" => "#{@account.name}"}
+                    %i.search.material-icons#acc-name-edit{"data-acc" => "#{@account.id}"} edit
                 %p.text-secondary #{@account.sort_code} | #{@account.acc_number}
                 %p.lead
                     Balance: 
                     .text-success= number_to_currency(@account.balance/100.0, unit: "£")
                 %hr.my-4
-                %a.btn.btn-primary.btn-lg(href="#transactions" role="button") View Transactions
+                = link_to "View Transactions", "#transactions", class: "btn btn-primary btn-lg"
 
     -if @pots.count > 0
         .row
@@ -29,50 +29,51 @@
                                         .card-body
                                             .progress
                                                 - @targets[pot.id.to_s].each_with_index do |target, i|
-                                                    .progress-bar(class="bg-#{@colours[i%6]}" role="progressbar" style="width: #{target[1]}%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="0")
+                                                    .progress-bar{"class" => "bg-#{@colours[i%6]}", "role" => "progressbar", "style" => "width: #{target[1]}%", "aria-valuenow" => "0", "aria-valuemin" => "0", "aria-valuemax" => "0"}
 
                                             %p
                                             - pot.targets.each_with_index do |target, i|
-                                                %p(data-toggle="tooltip" title="#{target.for}")
-                                                    %a(class="text-#{@colours[i%6]}") #{number_to_currency(@target_comp[pot.id.to_s][target.id.to_s], unit: "£")}
+                                                %p{"data-toggle" => "tooltip", "title" => "#{target.for}"}
+                                                    %a{"class" => "text-#{@colours[i%6]}"} #{number_to_currency(@target_comp[pot.id.to_s][target.id.to_s], unit: "£")}
                                                     %a.text-secondary  / #{number_to_currency(target.target/100.0, unit: "£")}
-                                            %a.btn.btn-primary(href="#{pot_view_path(@account, pot)}") Set / Change targets
+                                            = link_to "Set / Change targets", pot_view_path(@account, pot), class: "btn btn-primary btn-lg"
+                                            
 
     .row#transactions
         .col
             .row
-                %a.pages(href="#{account_view_offset_path(@account, @previous_page)}#transactions") <
+                = link_to "<", "#{account_view_offset_path(@account, @previous_page)}#transactions", class: "pages"
                 - for i in 1..@pages do
-                    %a.pages(href="#{account_view_offset_path(@account, i)}#transactions")= i
-                %a.pages(href="#{account_view_offset_path(@account, @next_page)}#transactions") >
+                    = link_to i, "#{account_view_offset_path(@account, i)}#transactions", class: "pages"
+                = link_to ">", "#{account_view_offset_path(@account, @next_page)}#transactions", class: "pages"
             %table.table.table-striped
                 %thead
                     %tr
-                        %th(scope="col") Date
-                        %th(scope="col") Payee
-                        %th(scope="col") Amount
-                        %th(scope="col") Balance
-                        %th(scope="col") Save
+                        %th{"scope" => "col"} Date
+                        %th{"scope" => "col"} Payee
+                        %th{"scope" => "col"} Amount
+                        %th{"scope" => "col"} Balance
+                        %th{"scope" => "col"} Save
                 %tbody
                     - @transactions.each_cons(2) do |transaction, next_transaction|
                         %tr
-                            %th(scope="row")= transaction.day.strftime('%d-%m-%Y')
+                            %th{"scope" => "row"}= transaction.day.strftime('%d-%m-%Y')
                             %td
                                 - if transaction.coin_jar == true
-                                    <span class="material-icons" data-toggle="tooltip" title="#{number_to_currency(transaction.coin_amount/100.0, unit: "£")}">monetization_on</span>
+                                    %span.material-icons{"data-toggle" => "tooltip", "title" => "#{number_to_currency(transaction.coin_amount/100.0, unit: "£")}"} monetization_on
                                 = transaction.payee
-                            %td(class="#{transaction.amount > 0 ? "text-success" : "text-danger"}")= number_to_currency(transaction.amount/100.0, unit: "£")
+                            %td{"class" => "#{transaction.amount > 0 ? "text-success" : "text-danger"}"}= number_to_currency(transaction.amount/100.0, unit: "£")
                             %td= number_to_currency(transaction.balance/100.0, unit: "£")
                             %td
-                                - if next_transaction.balance > -1 && transaction.amount > 0 && next_transaction.balance < @account.balance
-                                    <span class="material-icons transfer-balance" data-transaction="#{transaction.transaction_id}" data-amount-with-currency="#{number_to_currency(next_transaction.balance/100.0, unit: "£")}" data-amount="#{next_transaction.balance}" data-toggle="tooltip" title="Transfer #{number_to_currency(next_transaction.balance/100.0, unit: "£")}">account_balance_wallet</span>
+                                - if next_transaction.balance > -1 && transaction.amount > 0 && next_transaction.balance + @account.threshold_offset < @account.balance
+                                    %span.material-icons.transfer-balance{"data-transaction" => "#{transaction.transaction_id}", "data-amount-with-currency" => "#{number_to_currency((next_transaction.balance-@account.threshold_offset)/100.0, unit: "£")}", "data-amount" => "#{next_transaction.balance-@account.threshold_offset}", "data-toggle" => "tooltip", "title" => "Transfer #{number_to_currency((next_transaction.balance-@account.threshold_offset)/100.0, unit: "£")}"} account_balance_wallet
             
                     %tr
-                        %th(scope="row")= @transactions.last.day.strftime('%d-%m-%Y')
+                        %th{"scope" => "row"}= @transactions.last.day.strftime('%d-%m-%Y')
                         %td
                             - if @transactions.last.coin_jar == true
-                                <span class="material-icons" data-toggle="tooltip" title="#{number_to_currency(@transactions.last.coin_amount/100.0, unit: "£")}">monetization_on</span>
+                                %span.material-icons{"data-toggle" => "tooltip", "title" => "#{number_to_currency(@transactions.last.coin_amount/100.0, unit: "£")}"} monetization_on
                             = @transactions.last.payee
-                        %td(class="#{@transactions.last.amount > 0 ? "text-success" : "text-danger"}")= number_to_currency(@transactions.last.amount/100.0, unit: "£")
+                        %td{"class" => "#{@transactions.last.amount > 0 ? "text-success" : "text-danger"}"}= number_to_currency(@transactions.last.amount/100.0, unit: "£")
                         %td= number_to_currency(@transactions.last.balance/100.0, unit: "£")
                         %td
