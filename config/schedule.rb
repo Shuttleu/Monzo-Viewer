@@ -18,7 +18,9 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+set :environment, :development
+set :output, {:error => "log/cron.log", :standard => "log/cron.log"}
 
-every 1.hour do
-    rake 'accounts:update'
+every 1.minutes do
+    rake 'accounts:update', :environment => "development"
 end
