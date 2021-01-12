@@ -250,91 +250,15 @@ class AccountController < ApplicationController
                 @pot_title[pot.id.to_s] = "#{pot.name} - #{view_context.number_to_currency(pot.current/100.0, unit: "£")} / #{view_context.number_to_currency(running_total/100.0, unit:"£")}"
             end
         end
-
     end
 
-    def update_accounts
+    def update_accounts 
         current_user = get_user
         if current_user == "redirected"
             return
         end
+        puts "something"
+        current_user.account_updater(params[:force] == "from_start")
         @accounts = current_user.accounts
-        monzo = MonzoCalls.new(current_user)
-        if monzo.is_authorised?
-            accounts = monzo.get_accounts
-            
-            @accounts = current_user.accounts
-
-            accounts.each do |account|
-                if @accounts.where("account_id" => account["id"]).count == 0
-                    @accounts.create("account_id" => account["id"], "sort_code" => "#{account["sort_code"][0..1]}-#{account["sort_code"][2..3]}-#{account["sort_code"][4..5]}", "acc_number" => account["account_number"], "balance" => "0", "name" => account["description"])
-                end
-
-                pots = monzo.get_pots(account["id"])
-
-                user_account = @accounts.find_by("account_id" => account["id"])
-
-                user_pots = user_account.pots
-
-                pots.each do |pot|
-                    if user_pots.where("pot_id" => pot["id"]).count == 0
-                        user_pots.create("pot_id" => pot["id"], "name" => pot["name"], "current" => pot["balance"], "display" => !pot["deleted"])
-                    else
-                        temp_pot = user_pots.find_by("pot_id" => pot["id"])
-                        if temp_pot.current != pot["balance"]
-                            temp_pot.current = pot["balance"]
-                            temp_pot.display = !pot["deleted"]
-                            temp_pot.save
-                        end
-                    end
-                end
-
-                if user_account.transactions.count > 0
-                    temp_balance = user_account.transactions.last.balance
-                else
-                    temp_balance = 0
-                end
-                if params[:force] == "from_start"
-                    user_account.savings = user_account.pots.count > 0 ? user_account.pots.where("display" => true).first.id : "no_pots"
-                    user_account.threshold = 0
-                    user_account.threshold_offset = 0
-                    user_account.save
-                    temp_time = DateTime.new(2010, 1, 1, 0, 0, 0)
-                else
-                    temp_time = DateTime.now-60
-                end
-                transactions = monzo.get_transactions(account["id"], temp_time.strftime('%FT%TZ'))
-                transactions.each do |transaction|
-                    if user_account.transactions.where("transaction_id" => transaction["id"]).count == 0
-                        transaction_name = transaction["merchant"] != nil ? transaction["merchant"]["name"] : transaction["description"]
-                        pot_transfer = false
-                        coin_jar = false
-                        if transaction_name.slice(0, 4) == "pot_"
-                            to_or_from = transaction["amount"] < 0 ? "Transfer to pot: " : "Transfer from pot: "
-                            transaction_name = to_or_from + user_account.pots.find_by("pot_id" => transaction_name).name
-                        end
-                        if transaction["metadata"]["trigger"] == "coin_jar"
-                            pot_transfer = true
-                            last_transaction = user_account.transactions.last
-                            last_transaction.amount += transaction["amount"]
-                            last_transaction.balance += transaction["amount"]
-                            last_transaction.coin_amount = transaction["amount"]*-1
-                            last_transaction.save
-                        end
-                        unless transaction["metadata"]["coin_jar_transaction"].nil?
-                            coin_jar = true
-                        end
-                        temp_balance += transaction["amount"]
-                        user_account.transactions.create("day" => Time.parse(transaction["created"]), "payee" => transaction_name, "amount" => transaction["amount"], "balance" => temp_balance, "transaction_id" => transaction["id"], "pot_transfer" => pot_transfer, "coin_jar" => coin_jar)
-                    end
-                end
-                acc_balance = monzo.get_account_balance(account["id"])
-
-                if (user_account.balance != acc_balance["balance"])
-                    user_account.balance = acc_balance["balance"]
-                    user_account.save
-                end
-            end
-        end
     end
 end

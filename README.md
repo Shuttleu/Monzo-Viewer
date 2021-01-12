@@ -20,18 +20,25 @@ As for what it does:
 
 The requirements to run this application are Ruby on Rails 6.0, the ability to install the gems required (done after cloning this repository).
 
-Subsequently, Ruby on Rails requires Ruby, SQLite3, NodeJS and Yarn.
+Subsequently, Ruby on Rails requires Ruby, Node.JS and Yarn.
+
+This has been tested with the following versions
+
+```Ruby: 2.6.6```
+
+```Node.JS: 14.15.4```
+
+```Yarn: 1.22.5```
+
+```Rails: 6.0.3```
 
 If you wish to have the app automatically update the transactions and transfer money when a transaction meets to threshold, you also need to have to ability to run sceduled commands.
 Officially this is done via the whenever gem, however you can set it up in anyway you like so long as you can run a command on schedule.
-
 # Setup
 
 You can check to make sure you have everything installed by running the following commands
 
 ```ruby --version```
-
-```sqlite3 --version```
 
 ```node --version```
 
@@ -42,7 +49,6 @@ You can check to make sure you have everything installed by running the followin
 If you are missing anything, follow their guides on how to install
 
 * [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
-* [SQLite3](https://www.sqlite.org/index.html)
 * [NodeJS](https://nodejs.org/en/download/)
 * [Yarn](https://classic.yarnpkg.com/en/docs/install)
 * [Rails](https://guides.rubyonrails.org/getting_started.html)
@@ -57,11 +63,15 @@ This will download and install all the required gems for this application, once 
 
 ```rails webpacker:install```
 
-This will setup webpacker for your system. If it asks you to overwite anything, just hit **N**. Finally, type:
+This will setup webpacker for your system. If it asks you to overwite anything, just hit **N**. Next, type:
+
+```rails db:migrate```
+
+This will setup the database. Finally, to start the server type:
 
 ```rails server```
 
-The app will now be running and accessible on ```localhost:3000```. (As of the inital release, this is being distributed in development mode, so it is only accessible on localhost.
+The app will now be running and accessible on ```localhost:3000```. (While the app is in dev mode, if you wish to access this anywhere other than the local machine, add ```-b 0.0.0.0``` to the server start command)
 
 # Getting started
 
@@ -72,12 +82,14 @@ Please be sure to follow the instructions when setting up the OAuth Client, espe
 When authorising the app, please also ensure you open the email from the device you are setting the app up on, if you open it on another device, you will have to re-authenticate.
 
 After the app has been authenticated, you will have to allow access via the Monzo app, then you can click the button to download all account data.
+You will have 5 minutes from authorising in the app to download all the account data. If you leave it longer than this, you will have to re-authenticate.
 
 # Transfer money to savings pot
 
 If a transaction is a debit (that is, you are receiving money), the previous transaction had a positive balance and your current balance is above the previous transactions balance, there will be an option to transfer the previous transactions balance to a savings pot. By default, this pot is set to the first pot on your account, however you can change this to be whatever pot you like on the settings page.
 
-If you wish, you can have this automated if you set a threshold above £0.00 and have a way of running the ```rake accounts:update``` command.
+If you wish, you can have this automated if you set a threshold in the settings above £0.00, it will then transfer the money when it downloads the transaction data. 
+If you would like this completely automated, you should have a way of running the ```rake accounts:update``` command.
 Officially this is supported by using the whenever gem. Running ```whenever --update-crontab --set environment='development'``` will update your crontab to run the account update at regular intervals.
 By default this is set to run every hour and will check the previous two hours worth of transactions, but can be changed in the ```config/schedule.rb``` file.
 

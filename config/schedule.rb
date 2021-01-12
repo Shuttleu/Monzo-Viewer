@@ -21,6 +21,6 @@
 set :environment, :development
 set :output, {:error => "log/cron.log", :standard => "log/cron.log"}
 
-every 1.minutes do
+every 1.hours do
     rake 'accounts:update', :environment => "development"
 end
