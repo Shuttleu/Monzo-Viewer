@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get "first_run/oauth_details" => "setup#oauth_details", as: "oauth_details"
   post "first_run/authorisation_setup" => "setup#authorisation_setup", as: "authorisation_setup"
   get "first_run/complete_authorisation" => "setup#complete_authorisation", as: "complete_authorisation"
+  get "first_run/start_afresh" => "setup#start_afresh", as: "start_afresh"
   get "login" => "sessions#login", as: "login"
   get "login_error" => "sessions#login_error", as: "login_error"
   post "login_submit" => "sessions#login_submit", as: "login_submit"

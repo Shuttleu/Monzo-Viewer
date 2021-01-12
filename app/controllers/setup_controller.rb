@@ -18,6 +18,7 @@ class SetupController < ApplicationController
         user.client_secret = params["client_secret"]
         user.save
         @client_id = params["client_id"]
+        @token = cookie
     end
 
     def dev_portal
@@ -75,16 +76,30 @@ class SetupController < ApplicationController
             redirect_to login_path
             return
         end
-        user = User.where("cookie" => cookie).last
+        user = User.find_by("cookie" => cookie)
+        if params[:state] != cookie
+            render authorisation_error
+            return
+        end
         begin
             refresh = JSON.parse(RestClient.post("https://api.monzo.com/oauth2/token", {grant_type: "authorization_code", client_id: user.client_id, client_secret: user.client_secret, redirect_uri: complete_authorisation_url(), code: params[:code]}).body)
         rescue => e
             render authorisation_error
             return
         end
-        user.accounts.destroy_all
+        @already_accounts = user.accounts.count > 0
         user.access_token = refresh["access_token"]
         user.refresh_token = refresh["refresh_token"]
         user.save
+    end
+
+    def start_afresh
+        cookie = check_cookie
+        if cookie == "cookie_error"
+            redirect_to login_path
+            return
+        end
+        User.find_by("cookie" => cookie).accounts.destroy_all
+        redirect_to force_update_accounts_path("from_start")
     end
 end

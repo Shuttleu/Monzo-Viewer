@@ -73,7 +73,7 @@ This will setup the database. Finally, to start the server type:
 
 The app will now be running and accessible on ```localhost:3000```. (While the app is in dev mode, if you wish to access this anywhere other than the local machine, add ```-b 0.0.0.0``` to the server start command)
 
-# Getting started
+# Getting Started
 
 First you must create an account, nothing more than a username and password is required.
 
@@ -84,7 +84,7 @@ When authorising the app, please also ensure you open the email from the device 
 After the app has been authenticated, you will have to allow access via the Monzo app, then you can click the button to download all account data.
 You will have 5 minutes from authorising in the app to download all the account data. If you leave it longer than this, you will have to re-authenticate.
 
-# Transfer money to savings pot
+# Transfer Money To Savings Pot
 
 If a transaction is a debit (that is, you are receiving money), the previous transaction had a positive balance and your current balance is above the previous transactions balance, there will be an option to transfer the previous transactions balance to a savings pot. By default, this pot is set to the first pot on your account, however you can change this to be whatever pot you like on the settings page.
 
@@ -93,12 +93,16 @@ If you would like this completely automated, you should have a way of running th
 Officially this is supported by using the whenever gem. Running ```whenever --update-crontab --set environment='development'``` will update your crontab to run the account update at regular intervals.
 By default this is set to run every hour and will check the previous two hours worth of transactions, but can be changed in the ```config/schedule.rb``` file.
 
-# Updating accounts
+# Updating Accounts
 
 If you do not/cannot run the sceduled task, you can update the accounts and transactions from the settings page, this will update everything going back 60 days. If you have not updated the accounts for longer than this, it is recommended that you re-run the first run setup.
 
 Please note that you cannot take advantage of the automatic pot deposits if you update using this method.
 
-# Re-running the first run setup
+# Re-running The First Run Setup
 
-From the settings page, you can go back to the first run setup, this will allow you to sync everything from your account, but be warned that it will **delete all customisations** such as account name changes, pot targets and automatic pot deposits.
+From the settings page, you can go back to the first run setup, this will allow you to sync everything from your account. At this point you can choose to just sync whatever is missing, or start afresh. Be warned that if you choose to start afresh, it will **delete all customisations** such as account name changes, pot targets and automatic pot deposits.
+
+# Keeping Authenticated
+
+Due to SCA (Strong Customer Authentication) the app will remain authenticated for 90 days from the date it is authorised. You can extend this authorisation at any time by going into the app, tapping on your icon, going to settings, go into "Privacy & Security" and "Manage Apps". At the bottom of the screen, you can "Refresh permissions" which will refresh the authentication back to 90 days. If this expires, you will have to re-run the first setup, which you can do from the settings screen.
