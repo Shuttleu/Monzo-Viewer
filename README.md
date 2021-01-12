@@ -55,7 +55,11 @@ Once in this location, open a terminal / command prompt and type
 
 This will download and install all the required gems for this application, once this has finished, run: 
 
-```bin/rails server```
+```rails webpacker:install```
+
+This will setup webpacker for your system. If it asks you to overwite anything, just hit **N**. Finally, type:
+
+```rails server```
 
 The app will now be running and accessible on ```localhost:3000```. (As of the inital release, this is being distributed in development mode, so it is only accessible on localhost.
 
