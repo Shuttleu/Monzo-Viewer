@@ -95,10 +95,10 @@ class AccountController < ApplicationController
         end
         @accounts = current_user.accounts
         @pots = {}
-        @transfer_threshold = {}
+        @transfer_conditions = {}
         @threshold_offset = {}
         @accounts.each do |account|
-            @transfer_threshold[account.id] = account.threshold
+            @transfer_conditions[account.id] = account.conditions
             @threshold_offset[account.id] = account.threshold_offset
             @pots[account.id] = []
             account.pots.where("display" => true).each do |pot|
@@ -158,6 +158,25 @@ class AccountController < ApplicationController
         return
     end
 
+    def create_pot_condition
+        cookie = check_access
+        if cookie == "cookie_error"
+            redirect_to login_path
+            return
+        elsif cookie == "first_run"
+            redirect_to dev_portal_path
+            return
+        end
+        conditions = User.find_by("cookie" => cookie).accounts.find(params["id"]).conditions
+        if params["amount#{params["id"]}"].to_i == 1
+            conditions.create("amount" => true, "condition" => params["target#{params["id"]}"].to_f * 100)
+        else 
+            conditions.create("amount" => false, "condition" => params["target#{params["id"]}"])
+        end
+        redirect_to user_settings_path
+        return
+    end
+
     def delete_target
         cookie = check_access
         if cookie == "cookie_error"
@@ -169,6 +188,20 @@ class AccountController < ApplicationController
         end
         User.find_by("cookie" => cookie).accounts.find(params["id"]).pots.find(params["potid"]).targets.destroy(params["targetid"])
         redirect_to pot_view_path(params["id"], params["potid"])
+        return
+    end
+
+    def delete_pot_condition
+        cookie = check_access
+        if cookie == "cookie_error"
+            redirect_to login_path
+            return
+        elsif cookie == "first_run"
+            redirect_to dev_portal_path
+            return
+        end
+        User.find_by("cookie" => cookie).accounts.find(params["id"]).conditions.destroy(params["conditionid"])
+        redirect_to user_settings_path
         return
     end
 

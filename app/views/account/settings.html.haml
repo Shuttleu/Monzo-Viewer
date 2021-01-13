@@ -14,10 +14,33 @@
                         %select.form-control.savings-pot{"data-account" => account.id, "id" => "savings-pot#{i}", "data-number" => i}
                             = options_for_select @pots[account.id], "#{account.savings}"
                     %p
-                        Automatic transfer threshold: £
-                        = number_field_tag "threshold"+i.to_s, number_to_currency(@transfer_threshold[account.id]/100.0, unit: "", delimiter: ""), step: 0.01, min: 0, class: "form-control savings-pot", "data-number": "#{i}"
-                    %p
                         Amount to leave on transfer: £ 
                         = number_field_tag "threshold_leave"+i.to_s, number_to_currency(@threshold_offset[account.id]/100.0, unit: "", delimiter: ""), step: 0.01, min: 0, class: "form-control savings-pot", "data-number": "#{i}"
+                    - if @transfer_conditions[account.id].count == 0
+                        %h6 No conditions set, no money will be transfered automatically
+                    - else
+                        %h6 Money will be automatically tansferred when all of the following conditions are satisfied
+
+                    %ul
+                        - @transfer_conditions[account.id].each do |condition|
+                            - if condition.amount
+                                %li
+                                    Transaction value is at least #{number_to_currency(condition.condition.to_i/100.0, unit: "£")}
+                                    = link_to "clear", delete_pot_condition_path(account.id, condition.id), class: "material-icons text-danger"
+                            - else
+                                %li
+                                    Transaction description includes #{condition.condition}
+                                    = link_to "clear", delete_pot_condition_path(account.id, condition.id), class: "material-icons text-danger"
+                    
+                    %h6 Add a new condition
+                    %p
+                        = form_with(url: create_pot_condition_path(account.id), local: true) do |form|
+                            .form-group.form-check
+                                = form.check_box "amount#{account.id}", class: "form-check-input"
+                                = form.label "amount#{account.id}", "Based on transaction value?", class: "form-check-label", "data-toggle" => "tooltip", "title" => "Tick this box if this condition is based on the value of the transaction, or leave it unchecked if its based on the description of the transaction"
+                            .form-group
+                                = form.text_field "target#{account.id}", placeholder: "Minumum amount (in £'s) or Description text", class: "form-control", "data-toggle" => "tooltip", "title" => "If the condition is based on the description, it will match anything in the description before and after this condition"
+                            .form-group
+                                = form.submit "Add condition", class: "btn btn-primary"
                     %hr.my-4
                 = link_to "Update Accounts", update_accounts_path, class: "btn btn-primary btn-lg"

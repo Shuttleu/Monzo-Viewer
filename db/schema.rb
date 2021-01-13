@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_10_152138) do
+ActiveRecord::Schema.define(version: 2021_01_13_211158) do
 
   create_table "accounts", id: :string, force: :cascade do |t|
     t.string "user_id"
@@ -22,8 +22,15 @@ ActiveRecord::Schema.define(version: 2021_01_10_152138) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "savings"
-    t.integer "threshold"
     t.integer "threshold_offset"
+  end
+
+  create_table "conditions", id: :string, force: :cascade do |t|
+    t.string "account_id"
+    t.boolean "amount"
+    t.string "condition"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "pots", id: :string, force: :cascade do |t|

@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   get "account/:id" => "account#view", as: "account"
   get "accounts/settings" => "account#settings", as: "user_settings"
   get "account/:id/:transactionoffset" => "account#view", as: "account_view_offset"
+  post "account/:id/create_pot_condition" => "account#create_pot_condition", as: "create_pot_condition"
+  get "account/:id/delete_pot_condition/:conditionid" => "account#delete_pot_condition", as: "delete_pot_condition"
   get "account/:id/pot/:potid" => "account#pot", as: "pot_view"
   post "account/:id/pot/:potid/create_target" => "account#create_target", as: "create_target"
   get "account/:id/pot/:potid/delete_target/:targetid" => "account#delete_target", as: "delete_target"

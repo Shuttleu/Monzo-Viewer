@@ -35,7 +35,7 @@ document.addEventListener("turbolinks:load", function() {
         $.ajax({
             type: 'PATCH',
             url: "/account/" + $("#savings-pot"+savings_number).data("account") + "/savings_pot",
-            data : JSON.stringify({"new_pot": $("#savings-pot"+savings_number).val(), "threshold": $("#threshold"+savings_number).val(), "threshold_leave": $("#threshold_leave"+savings_number).val()}),
+            data : JSON.stringify({"new_pot": $("#savings-pot"+savings_number).val(), "threshold_leave": $("#threshold_leave"+savings_number).val()}),
             processData: false,
             contentType: 'application/merge-patch+json',
          

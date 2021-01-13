@@ -6,10 +6,8 @@ class User < ApplicationRecord
         
         puts "Updating User: #{self.id}"
         monzo = MonzoCalls.new(self)
-        sync_account = true
-        resync_transactions = []
         if monzo.is_authorised?
-            while sync_account
+            loop do
                 
                 sync_account = false
 
@@ -22,6 +20,8 @@ class User < ApplicationRecord
                     end
 
                     user_account = accounts.find_by("account_id" => account["id"])
+
+                    pot_conditions = user_account.conditions
 
                     acc_balance = monzo.get_account_balance(account["id"])
 
@@ -86,11 +86,29 @@ class User < ApplicationRecord
                             end
                             temp_balance += transaction["amount"]
 
-                            if user_account.threshold > 0 && transaction["amount"] > user_account.threshold && last_transaction.balance > 0 && user_account.savings != "no_pots" && !resync_transactions.include?(transaction["id"])
-                                monzo.transfer_to_pot(account["id"], user_account.pots.find(user_account.savings).pot_id, transaction["amount"] - last_transaction.balance, transaction["id"])
-                                sync_account = true
-                                resync_transactions << transaction["id"]
-                                puts "                Transaction triggered pot transfer, resyncing account when done!"
+                            if last_transaction.balance > 0 && user_account.savings != "no_pots" && pot_conditions.count > 0 && transaction["amount"] < acc_balance["balance"]
+                                puts "                Transaction triggered pot transfer, Checking if it meets the conditions!"
+                                do_transfer = true
+                                pot_conditions.each do |test_condition|
+                                    if test_condition.amount
+                                        puts "                    Transaction Value: #{transaction["amount"]}, Condition:#{test_condition.condition.to_i}"
+                                        if test_condition.condition.to_i > transaction["amount"].to_i
+                                            do_transfer = false
+                                        end
+                                    else
+                                        puts "                    Transaction Description: '#{transaction_name}', Condition:'#{test_condition.condition}'"
+                                        if  Regexp.new(test_condition.condition).match(transaction_name) == nil
+                                            do_transfer = false
+                                        end
+                                    end
+                                end
+                                if do_transfer
+                                    monzo.transfer_to_pot(account["id"], user_account.pots.find(user_account.savings).pot_id, last_transaction.balance - user_account.threshold_offset, transaction["id"])
+                                    sync_account = true
+                                    puts "                Pot transfer met all conditions, resyncing account when done!"
+                                else
+                                    puts "                Pot transfer didnt match all conditions, not transferring"
+                                end
                             end
                             user_account.transactions.create("day" => Time.parse(transaction["created"]), "payee" => transaction_name, "amount" => transaction["amount"], "balance" => temp_balance, "transaction_id" => transaction["id"], "pot_transfer" => pot_transfer, "coin_jar" => coin_jar)
                         end
@@ -100,6 +118,10 @@ class User < ApplicationRecord
                         user_account.balance = acc_balance["balance"]
                         user_account.save
                     end
+                end
+
+                if !sync_account
+                    break
                 end
             end
         end

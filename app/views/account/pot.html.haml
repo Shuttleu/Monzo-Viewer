@@ -19,10 +19,10 @@
                                         %a{"class" => "text-#{@colours[i%6]}"} #{number_to_currency(@target_comp[target.id.to_s], unit: "£")}
                                         %a.text-secondary  / #{number_to_currency(target.target/100.0, unit: "£")}
                                         = link_to "clear", delete_target_path(params["id"], params["potid"], target.id), class: "material-icons text-danger"
-                                = form_with(url: create_target_path, local: true) do |new_user_form|
+                                = form_with(url: create_target_path, local: true) do |form|
                                     .mb-3
-                                        = new_user_form.text_field :for, placeholder: "Decription", class: "form-control"
+                                        = form.text_field :for, placeholder: "Decription", class: "form-control"
                                     .mb-3
-                                        = new_user_form.text_field :target, placeholder: "Target (in £'s)", class: "form-control"
+                                        = form.text_field :target, placeholder: "Target (in £'s)", class: "form-control"
                                     .mb-3
-                                        = new_user_form.submit class: "btn btn-primary"
+                                        = form.submit class: "btn btn-primary"

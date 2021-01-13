@@ -88,10 +88,12 @@ You will have 5 minutes from authorising in the app to download all the account 
 
 If a transaction is a debit (that is, you are receiving money), the previous transaction had a positive balance and your current balance is above the previous transactions balance, there will be an option to transfer the previous transactions balance to a savings pot. By default, this pot is set to the first pot on your account, however you can change this to be whatever pot you like on the settings page.
 
-If you wish, you can have this automated if you set a threshold in the settings above £0.00, it will then transfer the money when it downloads the transaction data. 
+If you wish, you can have this automated if you set a some conditions in the settings, it will then transfer the money when it downloads the transaction data. 
 If you would like this completely automated, you should have a way of running the ```rake accounts:update``` command.
 Officially this is supported by using the whenever gem. Running ```whenever --update-crontab --set environment='development'``` will update your crontab to run the account update at regular intervals.
 By default this is set to run every hour and will check the previous two hours worth of transactions, but can be changed in the ```config/schedule.rb``` file.
+
+The conditions for automatically transferring money to a pot can either be based on transaction value (Is the transaction above the set value?), or by description (Does the transaction description contain the set value?). All conditions much pass in order to transfer money to a pot automatically.
 
 # Updating Accounts
 
