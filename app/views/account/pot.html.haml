@@ -18,7 +18,7 @@
                                         %a #{target.for}: 
                                         %a{"class" => "text-#{@colours[i%6]}"} #{number_to_currency(@target_comp[target.id.to_s], unit: "£")}
                                         %a.text-secondary  / #{number_to_currency(target.target/100.0, unit: "£")}
-                                        = link_to "clear", delete_target_path(params["id"], params["potid"], target.id), class: "material-icons text-danger"
+                                        = link_to "clear", delete_target_path(params["id"], params["potid"], target.id), class: "material-icons text-danger", method: :delete
                                 = form_with(url: create_target_path, local: true) do |form|
                                     .mb-3
                                         = form.text_field :for, placeholder: "Decription", class: "form-control"

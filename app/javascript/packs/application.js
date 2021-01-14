@@ -34,28 +34,16 @@ document.addEventListener("turbolinks:load", function() {
         console.log(savings_number)
         $.ajax({
             type: 'PATCH',
-            url: "/account/" + $("#savings-pot"+savings_number).data("account") + "/savings_pot",
-            data : JSON.stringify({"new_pot": $("#savings-pot"+savings_number).val(), "threshold_leave": $("#threshold_leave"+savings_number).val()}),
-            processData: false,
-            contentType: 'application/merge-patch+json',
-         
-         },
-         function(data, status){
-           alert("Data: " + data + "\nStatus: " + status);
-         });
+            url: "/account/" + $("#savings-pot"+savings_number).data("account"),
+            data : JSON.stringify({"savings": $("#savings-pot"+savings_number).val(), "threshold_offset": $("#threshold_leave"+savings_number).val()*100}),
+        });
     };
     $('.transfer-balance').on('click', function() {
         if (confirm('This will transfer ' + $(this).data("amount-with-currency") + " to your designated savings pot")) { 
             alert('Now transfering money, please wait.');
             $.ajax({
                 type: 'GET',
-                url: "/account/" + $("#acc-name-edit").data("acc") + "/transfer_to_pot/" + $(this).data("amount") + "/" + $(this).data("transaction"),
-                processData: false,
-                contentType: 'application/merge-patch+json',
-            
-            },
-            function(data, status){
-            alert("Data: " + data + "\nStatus: " + status);
+                url: "/account/" + $("#acc-name-edit").data("acc") + "/transfer_to_pot/" + $(this).data("amount") + "/" + $(this).data("transaction")
             });
         } else {
             alert('No money was transfered.');
@@ -75,15 +63,8 @@ document.addEventListener("turbolinks:load", function() {
             
             $.ajax({
                type: 'PATCH',
-               url: "/account/" + $("#acc-name-edit").data("acc") + "/name",
-               data : JSON.stringify({"new_name": $('#acc-name-input').val()}),
-               processData: false,
-               contentType: 'application/merge-patch+json',
-            
-               /* success and error handling omitted for brevity */
-            },
-            function(data, status){
-              alert("Data: " + data + "\nStatus: " + status);
+               url: "/account/" + $("#acc-name-edit").data("acc"),
+               data : JSON.stringify({"name": $('#acc-name-input').val()}),
             });
         }
         

@@ -26,11 +26,11 @@
                             - if condition.amount
                                 %li
                                     Transaction value is at least #{number_to_currency(condition.condition.to_i/100.0, unit: "£")}
-                                    = link_to "clear", delete_pot_condition_path(account.id, condition.id), class: "material-icons text-danger"
+                                    = link_to "clear", delete_pot_condition_path(account.id, condition.id), class: "material-icons text-danger", method: :delete
                             - else
                                 %li
                                     Transaction description includes #{condition.condition}
-                                    = link_to "clear", delete_pot_condition_path(account.id, condition.id), class: "material-icons text-danger"
+                                    = link_to "clear", delete_pot_condition_path(account.id, condition.id), class: "material-icons text-danger", method: :delete
                     
                     %h6 Add a new condition
                     %p

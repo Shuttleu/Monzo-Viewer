@@ -53,7 +53,6 @@ class User < ApplicationRecord
 
                     if force
                         user_account.savings = user_account.pots.count > 0 ? user_account.pots.where("display" => true).first.id : "no_pots"
-                        user_account.threshold = 0
                         user_account.threshold_offset = 0
                         user_account.save
                         temp_time = DateTime.new(2010, 1, 1, 0, 0, 0)
@@ -97,7 +96,7 @@ class User < ApplicationRecord
                                         end
                                     else
                                         puts "                    Transaction Description: '#{transaction_name}', Condition:'#{test_condition.condition}'"
-                                        if  Regexp.new(test_condition.condition).match(transaction_name) == nil
+                                        if  Regexp.new(Regexp.escape(test_condition.condition)).match(transaction_name) == nil
                                             do_transfer = false
                                         end
                                     end

@@ -110,21 +110,7 @@ class AccountController < ApplicationController
         end
     end
 
-    def update_name
-        cookie = check_access
-        if cookie == "cookie_error"
-            redirect_to login_path
-            return
-        elsif cookie == "first_run"
-            redirect_to dev_portal_path
-            return
-        end
-        account = User.find_by("cookie" => cookie).accounts.find(params[:id])
-        account.name = JSON.parse(request.raw_post)["new_name"]
-        account.save
-    end
-
-    def update_savings_pot
+    def update
         cookie = check_access
         if cookie == "cookie_error"
             redirect_to login_path
@@ -135,10 +121,8 @@ class AccountController < ApplicationController
         end
         values = JSON.parse(request.raw_post)
         current_account = User.find_by("cookie" => cookie).accounts.find(params[:id])
-        current_account.savings = values["new_pot"]
-        current_account.threshold = ((values["threshold"].to_f)*100).to_i
-        current_account.threshold_offset = ((values["threshold_leave"].to_f)*100).to_i
-        current_account.save
+        current_account.update_attributes(values)
+
     end
 
     def create_target
