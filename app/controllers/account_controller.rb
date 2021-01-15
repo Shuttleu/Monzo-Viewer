@@ -217,13 +217,19 @@ class AccountController < ApplicationController
             for i in 1..2 do
                 @view_pages << i
             end
-            if @current_page == 3
+            if @current_page < 4
                 @view_pages << 3
+            end
+            if @current_page == 3
+                @view_pages << 4
             elsif @current_page.between?(4,pages-3)
                 @view_pages << @previous_page
                 @view_pages << @current_page
                 @view_pages << @next_page
             elsif @current_page == pages-2
+                @view_pages << pages-3
+            end
+            if @current_page > pages-3
                 @view_pages << pages-2
             end
             for i in pages-1..pages do
