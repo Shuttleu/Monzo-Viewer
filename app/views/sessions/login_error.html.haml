@@ -17,7 +17,7 @@
 .container
     .row
         .col
-            .jumbotron
+            .jumbotron.text-center
                 %h1.display-4
-                    Pot not found!
-                = link_to "Go back to account", accounts_path, class: "btn btn-primary btn-lg"
+                    %a Invalid Username or Password!
+                = link_to "Try again", login_path, class: "btn btn-primary"

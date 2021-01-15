@@ -1,4 +1,22 @@
+-#    This file is part of Monzo-Viewer.
+
+-#    Monzo-Viewer is free software: you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation, either version 3 of the License, or
+-#    any later version.
+
+-#    Monzo-Viewer is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+
+-#    You should have received a copy of the GNU General Public License
+-#    along with Monzo-Viewer.  If not, see <https://www.gnu.org/licenses/>.
+
 %nav.navbar.sticky-top.navbar-expand-lg.navbar-light.bg-light
+    = link_to "Monzo", accounts_path, class: "navbar-brand"
+    %button.navbar-toggler{"type" => "button", "data-toggle" => "collapse", "data-target" => "#navbarNavDropdown", "aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation"}
+        %span.navbar-toggler-icon
     .collapse.navbar-collapse#navbarNavDropdown
         %ul.navbar-nav
             %li.nav-item.dropdown
@@ -6,6 +24,7 @@
                     Accounts
                 .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
                     = link_to "All Accounts", accounts_path, class: "dropdown-item"
+                    .dropdown-divider
                     - @accounts.each do |account|
                         = link_to account.name, account_path(account), class: "dropdown-item"
             %li.nav-item

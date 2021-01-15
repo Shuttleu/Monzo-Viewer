@@ -61,9 +61,9 @@ Once in this location, open a terminal / command prompt and type
 
 This will download and install all the required gems for this application, once this has finished, run: 
 
-```rails webpacker:install```
+```yarn install --check-files```
 
-This will setup webpacker for your system. If it asks you to overwite anything, just hit **N**. Next, type:
+This will setup node_modules. If it asks you to overwite anything, just hit **N**. Next, type:
 
 ```rails db:migrate```
 
@@ -108,3 +108,12 @@ From the settings page, you can go back to the first run setup, this will allow 
 # Keeping Authenticated
 
 Due to SCA (Strong Customer Authentication) the app will remain authenticated for 90 days from the date it is authorised. You can extend this authorisation at any time by going into the app, tapping on your icon, going to settings, go into "Privacy & Security" and "Manage Apps". At the bottom of the screen, you can "Refresh permissions" which will refresh the authentication back to 90 days. If this expires, you will have to re-run the first setup, which you can do from the settings screen.
+
+# License
+
+Monzo-Viewer is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
+
+Monzo-Viewer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Monzo-Viewer.  If not, see <https://www.gnu.org/licenses/>.
+

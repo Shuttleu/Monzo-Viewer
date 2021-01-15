@@ -31,3 +31,11 @@
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+bin/bundle
+bin/rails
+bin/rake
+bin/setup
+bin/spring
+bin/webpack
+bin/webpack-dev-server
+bin/yarn

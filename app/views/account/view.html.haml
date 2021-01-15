@@ -1,3 +1,18 @@
+-#    This file is part of Monzo-Viewer.
+
+-#    Monzo-Viewer is free software: you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation, either version 3 of the License, or
+-#    any later version.
+
+-#    Monzo-Viewer is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+
+-#    You should have received a copy of the GNU General Public License
+-#    along with Monzo-Viewer.  If not, see <https://www.gnu.org/licenses/>.
+
 = render "nav"
 .container
     .row
@@ -23,8 +38,8 @@
                     .container
                         .row
                             - @pots.each do |pot|
-                                .col.pot
-                                    .card.mx-auto
+                                .col-lg-6.card-spacing.mx-auto
+                                    .card
                                         .card-header #{@pot_title[pot.id.to_s]}
                                         .card-body
                                             .progress
@@ -41,11 +56,27 @@
 
     .row#transactions
         .col
-            .row
-                = link_to "<", "#{account_view_offset_path(@account, @previous_page)}#transactions", class: "pages"
-                - for i in 1..@pages do
-                    = link_to i, "#{account_view_offset_path(@account, i)}#transactions", class: "pages"
-                = link_to ">", "#{account_view_offset_path(@account, @next_page)}#transactions", class: "pages"
+            %ul.nav.nav-pills
+                %li.nav-item
+                    = link_to "<", "#{account_view_offset_path(@account, @previous_page)}#transactions", class: "nav-link"
+                - if @do_dots
+                    - i = 0
+                    - while true do
+                        %li.nav-item
+                            = link_to @view_pages[i], "#{account_view_offset_path(@account, @view_pages[i])}#transactions", class: "nav-link #{"active" if @view_pages[i] == @current_page}"
+                            - if @view_pages[i]+1 != @view_pages[i+1] && @view_pages.count != i+1
+                                %li.nav-item
+                                    %a.nav-link= "..."
+                            - break if @view_pages.count == i+1
+                            - i += 1
+                - else
+                    - @view_pages.each do |view_page|
+                        %li.nav-item
+                            = link_to view_page, "#{account_view_offset_path(@account, view_page)}#transactions", class: "nav-link"
+                %li.nav-item
+                    = link_to ">", "#{account_view_offset_path(@account, @next_page)}#transactions", class: "nav-link"
+    .row
+        .table-responsive
             %table.table.table-striped
                 %thead
                     %tr
