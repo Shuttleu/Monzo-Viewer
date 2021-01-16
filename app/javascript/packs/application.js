@@ -9,6 +9,8 @@ require("@rails/ujs").start()
 require("turbolinks").start()
 require("channels")
 require("bootstrap/dist/js/bootstrap")
+require("chartkick")
+require("chart.js")
 
 
 

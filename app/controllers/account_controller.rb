@@ -208,7 +208,26 @@ class AccountController < ApplicationController
         pages = (temp_transactions.count/100)+1
         @current_page = params[:transactionoffset].to_i == 0 ? 1 : params[:transactionoffset].to_i
         @previous_page = @current_page == 1 ? 1 : @current_page-1
-        @next_page = @current_page == @pages ? @pages : @current_page+1
+        @next_page = @current_page == pages ? pages : @current_page+1
+
+        @last_60_balance = {}
+
+        current_balance = @account.balance
+        #@pots.each do |pot|
+        #    current_balance += pot.current
+        #end
+
+        for i in 0..179 do
+            day = DateTime.current.beginning_of_day.ago(3600*24*i)
+            #transactions_for_day = @account.transactions.where.not("amount" => 0).where(:day => day)
+            transactions_for_day = temp_transactions.where(:day => day)
+            transactions_for_day.each do |transaction|
+                current_balance -= transaction.amount
+            end
+            @last_60_balance[day.strftime('%d-%m-%Y')] = current_balance/100.0
+        end
+
+        puts @last_60_balance
 
         @view_pages = []
         @do_dots = false
@@ -217,7 +236,7 @@ class AccountController < ApplicationController
             for i in 1..2 do
                 @view_pages << i
             end
-            if @current_page < 4
+            if @current_page == 2 || @current_page == 3
                 @view_pages << 3
             end
             if @current_page == 3
@@ -229,7 +248,7 @@ class AccountController < ApplicationController
             elsif @current_page == pages-2
                 @view_pages << pages-3
             end
-            if @current_page > pages-3
+            if @current_page == pages-3 || @current_page == pages-2
                 @view_pages << pages-2
             end
             for i in pages-1..pages do
