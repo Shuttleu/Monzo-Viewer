@@ -201,7 +201,9 @@ class AccountController < ApplicationController
         end
 
         @pots = @account.pots.where("display" => true)
-        temp_transactions = @account.transactions.where("pot_transfer" => false).where.not("amount" => 0).reverse_order
+        temp_transactions_w_pots =  @account.transactions.where.not("amount" => 0)
+        temp_transactions_roundups =  temp_transactions_w_pots.where("pot_transfer" => true)
+        temp_transactions = temp_transactions_w_pots.where("pot_transfer" => false).reverse_order
         offset = (params[:transactionoffset].to_i-1)*100
         limit = 100
         @transactions = temp_transactions.offset(offset).limit(limit)
@@ -211,23 +213,54 @@ class AccountController < ApplicationController
         @next_page = @current_page == pages ? pages : @current_page+1
 
         @last_60_balance = {}
+        @last_60_balance_w_pots = {}
+        @last_60_balance_only_pots = {}
+
+        @last_60 = []
 
         current_balance = @account.balance
-        #@pots.each do |pot|
-        #    current_balance += pot.current
-        #end
+        current_balance_w_pots = @account.balance
+        current_balance_only_pots = 0
+        @pots.each do |pot|
+            current_balance_w_pots += pot.current
+            current_balance_only_pots += pot.current
+        end
+
+        @last_60_balance[DateTime.current.beginning_of_day.strftime('%d-%m-%Y')] = current_balance/100.0
+        @last_60_balance_w_pots[DateTime.current.beginning_of_day.strftime('%d-%m-%Y')] = current_balance_w_pots/100.0
+        @last_60_balance_only_pots[DateTime.current.beginning_of_day.strftime('%d-%m-%Y')] = current_balance_only_pots/100.0
 
         for i in 0..179 do
             day = DateTime.current.beginning_of_day.ago(3600*24*i)
-            #transactions_for_day = @account.transactions.where.not("amount" => 0).where(:day => day)
+
             transactions_for_day = temp_transactions.where(:day => day)
+
+            transactions_for_day_roundups = temp_transactions_roundups.where(:day => day)
+
+            transactions_for_day_roundups.each do |transaction|
+                current_balance_w_pots -= transaction.amount
+            end
+
             transactions_for_day.each do |transaction|
                 current_balance -= transaction.amount
+                if !transaction.payee.include?("Transfer")
+                    current_balance_w_pots -= transaction.amount
+                else
+                    current_balance_only_pots += transaction.amount
+                end
             end
-            @last_60_balance[day.strftime('%d-%m-%Y')] = current_balance/100.0
+            @last_60_balance[day.ago(3600*24).strftime('%d-%m-%Y')] = current_balance/100.0
+            @last_60_balance_w_pots[day.ago(3600*24).strftime('%d-%m-%Y')] = current_balance_w_pots/100.0
+            @last_60_balance_only_pots[day.ago(3600*24).strftime('%d-%m-%Y')] = current_balance_only_pots/100.0
+
         end
 
-        puts @last_60_balance
+        
+        @last_60 << {"name": "Balance", "data": @last_60_balance.reverse_each}
+        @last_60 << {"name": "Balance With Pots", "data": @last_60_balance_w_pots.reverse_each}
+        @last_60 << {"name": "Balance in Pots", "data": @last_60_balance_only_pots.reverse_each}
+
+        puts @last_60
 
         @view_pages = []
         @do_dots = false
