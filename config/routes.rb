@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   get "logout" => "sessions#logout", as: "logout"
   get "accounts" => "account#viewall", as: "accounts"
   get "account/:id" => "account#view", as: "account"
+  get "account/:id/graph" => "account#graph", as: "account_graph"
   get "accounts/settings" => "account#settings", as: "user_settings"
   get "account/:id/:transactionoffset" => "account#view", as: "account_view_offset"
   post "account/:id/create_pot_condition" => "account#create_pot_condition", as: "create_pot_condition"

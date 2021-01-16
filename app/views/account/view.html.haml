@@ -14,7 +14,7 @@
 -#    along with Monzo-Viewer.  If not, see <https://www.gnu.org/licenses/>.
 
 = render "nav"
-.container
+.container.min-vh-100
     .row
         .col
             .jumbotron
@@ -26,6 +26,9 @@
                 %p.lead
                     Balance: 
                     .text-success= number_to_currency(@account.balance/100.0, unit: "£")
+                - if @show_graph
+                    %hr.my-4
+                    = line_chart account_graph_path, curve: false, round: 2, zeros: true, points: false, prefix: "£", thousands: ","
                 %hr.my-4
                 = link_to "View Transactions", "#transactions", class: "btn btn-primary btn-lg"
 
@@ -39,7 +42,7 @@
                         .row
                             - @pots.each do |pot|
                                 .col-lg-6.card-spacing.mx-auto
-                                    .card
+                                    .card.h-100
                                         .card-header #{@pot_title[pot.id.to_s]}
                                         .card-body
                                             .progress
@@ -56,25 +59,26 @@
 
     .row#transactions
         .col
-            %ul.nav.nav-pills
-                %li.nav-item
-                    = link_to "<", "#{account_view_offset_path(@account, @previous_page)}#transactions", class: "nav-link"
-                - if @do_dots
-                    - i = 0
-                    - while true do
-                        %li.nav-item
-                            = link_to @view_pages[i], "#{account_view_offset_path(@account, @view_pages[i])}#transactions", class: "nav-link #{"active" if @view_pages[i] == @current_page}"
-                            - if @view_pages[i]+1 != @view_pages[i+1] && @view_pages.count != i+1
-                                %li.nav-item
-                                    %a.nav-link= "..."
-                            - break if @view_pages.count == i+1
-                            - i += 1
-                - else
-                    - @view_pages.each do |view_page|
-                        %li.nav-item
-                            = link_to view_page, "#{account_view_offset_path(@account, view_page)}#transactions", class: "nav-link"
-                %li.nav-item
-                    = link_to ">", "#{account_view_offset_path(@account, @next_page)}#transactions", class: "nav-link"
+            %nav
+                %ul.pagination
+                    %li.page-item
+                        = link_to "<", "#{account_view_offset_path(@account, @previous_page)}#transactions", class: "page-link"
+                    - if @do_dots
+                        - i = 0
+                        - while true do
+                            %li.page-item{"class" => "#{"active" if @view_pages[i] == @current_page}"}
+                                = link_to @view_pages[i], "#{account_view_offset_path(@account, @view_pages[i])}#transactions", class: "page-link"
+                                - if @view_pages[i]+1 != @view_pages[i+1] && @view_pages.count != i+1
+                                    %li.page-item.disabled
+                                        %span.page-link= "..."
+                                - break if @view_pages.count == i+1
+                                - i += 1
+                    - else
+                        - @view_pages.each do |view_page|
+                            %li.page-item
+                                = link_to view_page, "#{account_view_offset_path(@account, view_page)}#transactions", class: "page-link"
+                    %li.page-item
+                        = link_to ">", "#{account_view_offset_path(@account, @next_page)}#transactions", class: "page-link"
     .row
         .table-responsive
             %table.table.table-striped

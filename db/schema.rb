@@ -25,7 +25,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_13_211158) do
+ActiveRecord::Schema.define(version: 2021_01_16_124306) do
 
   create_table "accounts", id: :string, force: :cascade do |t|
     t.string "user_id"
@@ -38,6 +38,9 @@ ActiveRecord::Schema.define(version: 2021_01_13_211158) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "savings"
     t.integer "threshold_offset"
+    t.boolean "show_balance"
+    t.boolean "show_pots"
+    t.boolean "show_combined"
   end
 
   create_table "conditions", id: :string, force: :cascade do |t|

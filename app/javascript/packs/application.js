@@ -9,6 +9,8 @@ require("@rails/ujs").start()
 require("turbolinks").start()
 require("channels")
 require("bootstrap/dist/js/bootstrap")
+require("chartkick")
+require("chart.js")
 
 
 
@@ -35,7 +37,7 @@ document.addEventListener("turbolinks:load", function() {
         $.ajax({
             type: 'PATCH',
             url: "/account/" + $("#savings-pot"+savings_number).data("account"),
-            data : JSON.stringify({"savings": $("#savings-pot"+savings_number).val(), "threshold_offset": $("#threshold_leave"+savings_number).val()*100}),
+            data : JSON.stringify({"savings": $("#savings-pot"+savings_number).val(), "threshold_offset": $("#threshold_leave"+savings_number).val()*100, "show_balance": $("#pulse-acc-bal"+savings_number).is(":checked"), "show_pots": $("#pulse-pot-bal"+savings_number).is(":checked"), "show_combined": $("#pulse-comb-bal"+savings_number).is(":checked")}),
         });
     };
     $('.transfer-balance').on('click', function() {
