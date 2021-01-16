@@ -23,14 +23,25 @@
                 %p= link_to "Re-run Account Authorisation (incase the app becomes deauthorised)", dev_portal_path, class: "text-secondary"
                 %hr.my-4
                 - @accounts.each_with_index do |account, i|
-                    %h4 #{account.name}
+                    %h3 #{account.name}
+                    %h5 Pulsegraph Settings
+                    .form-group.form-check
+                        = check_box_tag "pulse-acc-bal#{i.to_s}", 1, account.show_balance, class: "form-check-input savings-pot", "data-number": "#{i}"
+                        = label_tag "pulse-acc-bal#{i.to_s}", "Show account balance on pulsegraph?", class: "form-check-label", "data-toggle" => "tooltip", "title" => "Tick this box if you want to display your balance over the last 6 months on the pulsegraph"
+                    .form-group.form-check
+                        = check_box_tag "pulse-pot-bal#{i.to_s}", 1, account.show_pots, class: "form-check-input savings-pot", "data-number": "#{i}"
+                        = label_tag "pulse-pot-bal#{i.to_s}", "Show pot balance on pulsegraph?", class: "form-check-label", "data-toggle" => "tooltip", "title" => "Tick this box if you want to display your balance over the last 6 months on the pulsegraph"
+                    .form-group.form-check
+                        = check_box_tag "pulse-comb-bal#{i.to_s}", 1, account.show_combined, class: "form-check-input savings-pot", "data-number": "#{i}"
+                        = label_tag "ampulse-comb-balount#{i.to_s}", "Show combined account and pot balance on pulsegraph?", class: "form-check-label", "data-toggle" => "tooltip", "title" => "Tick this box if you want to display your balance over the last 6 months on the pulsegraph"
+                    %h5 Pot Transfer
                     %p
                         Savings Pot: 
                         %select.form-control.savings-pot{"data-account" => account.id, "id" => "savings-pot#{i}", "data-number" => i}
                             = options_for_select @pots[account.id], "#{account.savings}"
                     %p
                         Amount to leave on transfer: £ 
-                        = number_field_tag "threshold_leave"+i.to_s, number_to_currency(@threshold_offset[account.id]/100.0, unit: "", delimiter: ""), step: 0.01, min: 0, class: "form-control savings-pot", "data-number": "#{i}"
+                        = number_field_tag "threshold_leave#{i.to_s}", number_to_currency(@threshold_offset[account.id]/100.0, unit: "", delimiter: ""), step: 0.01, min: 0, class: "form-control savings-pot", "data-number": "#{i}"
                     - if @transfer_conditions[account.id].count == 0
                         %h6 No conditions set, no money will be transfered automatically
                     - else

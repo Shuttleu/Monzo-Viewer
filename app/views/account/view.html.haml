@@ -26,8 +26,9 @@
                 %p.lead
                     Balance: 
                     .text-success= number_to_currency(@account.balance/100.0, unit: "£")
-                %hr.my-4
-                = line_chart @last_60, curve: false, round: 2, zeros: true, points: false, prefix: "£", thousands: ","
+                - if @show_graph
+                    %hr.my-4
+                    = line_chart account_graph_path, curve: false, round: 2, zeros: true, points: false, prefix: "£", thousands: ","
                 %hr.my-4
                 = link_to "View Transactions", "#transactions", class: "btn btn-primary btn-lg"
 
