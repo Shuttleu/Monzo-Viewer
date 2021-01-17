@@ -247,9 +247,9 @@ class AccountController < ApplicationController
         end
 
         
-        last_60 << {"name": "Balance", "data": last_60_balance.reverse_each} if account.show_balance
-        last_60 << {"name": "Balance With Pots", "data": last_60_balance_w_pots.reverse_each} if account.show_pots
-        last_60 << {"name": "Balance in Pots", "data": last_60_balance_only_pots.reverse_each} if account.show_combined
+        last_60 << {"name": "Account", "data": last_60_balance.reverse_each} if account.show_balance
+        last_60 << {"name": "Pots", "data": last_60_balance_only_pots.reverse_each} if account.show_pots
+        last_60 << {"name": "Combined", "data": last_60_balance_w_pots.reverse_each} if account.show_combined
 
         render json: last_60
     end
@@ -323,7 +323,7 @@ class AccountController < ApplicationController
             running_total = 0
             pot.targets.each do |target|
                 if target.target+running_total <= pot.current
-                    @targets[pot.id.to_s][target.id.to_s] = target.target*100/pot.targets.sum(:target).to_f
+                    @targets[pot.id.to_s][target.id.to_s] = [target.for, target.target*100/pot.targets.sum(:target).to_f]
                     @target_comp[pot.id.to_s][target.id.to_s] = target.target/100.0
                     running_total += target.target
 
@@ -331,7 +331,7 @@ class AccountController < ApplicationController
                     a = (pot.current - running_total) / target.target.to_f
                     b = target.target*100 / pot.targets.sum(:target).to_f
                     c = a * b
-                    @targets[pot.id.to_s][target.id.to_s] = c
+                    @targets[pot.id.to_s][target.id.to_s] = [target.for, c]
                     @target_comp[pot.id.to_s][target.id.to_s] = ((pot.current-running_total) < 0 ? 0 : (pot.current-running_total)/100.0)
                     running_total += target.target
                 end

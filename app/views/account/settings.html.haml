@@ -17,56 +17,66 @@
 .container
     .row
         .col
-            .jumbotron
+            .jumbotron.p-5.rounded.m-3
                 %h1.display-4
                     Settings
                 %p= link_to "Re-run Account Authorisation (incase the app becomes deauthorised)", dev_portal_path, class: "text-secondary"
-                %hr.my-4
-                - @accounts.each_with_index do |account, i|
-                    %h3 #{account.name}
-                    %h5 Pulsegraph Settings
-                    .form-group.form-check
-                        = check_box_tag "pulse-acc-bal#{i.to_s}", 1, account.show_balance, class: "form-check-input savings-pot", "data-number": "#{i}"
-                        = label_tag "pulse-acc-bal#{i.to_s}", "Show account balance on pulsegraph?", class: "form-check-label", "data-toggle" => "tooltip", "title" => "Tick this box if you want to display your balance over the last 6 months on the pulsegraph"
-                    .form-group.form-check
-                        = check_box_tag "pulse-pot-bal#{i.to_s}", 1, account.show_pots, class: "form-check-input savings-pot", "data-number": "#{i}"
-                        = label_tag "pulse-pot-bal#{i.to_s}", "Show pot balance on pulsegraph?", class: "form-check-label", "data-toggle" => "tooltip", "title" => "Tick this box if you want to display your balance over the last 6 months on the pulsegraph"
-                    .form-group.form-check
-                        = check_box_tag "pulse-comb-bal#{i.to_s}", 1, account.show_combined, class: "form-check-input savings-pot", "data-number": "#{i}"
-                        = label_tag "ampulse-comb-balount#{i.to_s}", "Show combined account and pot balance on pulsegraph?", class: "form-check-label", "data-toggle" => "tooltip", "title" => "Tick this box if you want to display your balance over the last 6 months on the pulsegraph"
-                    %h5 Pot Transfer
-                    %p
-                        Savings Pot: 
-                        %select.form-control.savings-pot{"data-account" => account.id, "id" => "savings-pot#{i}", "data-number" => i}
-                            = options_for_select @pots[account.id], "#{account.savings}"
-                    %p
-                        Amount to leave on transfer: £ 
-                        = number_field_tag "threshold_leave#{i.to_s}", number_to_currency(@threshold_offset[account.id]/100.0, unit: "", delimiter: ""), step: 0.01, min: 0, class: "form-control savings-pot", "data-number": "#{i}"
-                    - if @transfer_conditions[account.id].count == 0
-                        %h6 No conditions set, no money will be transfered automatically
-                    - else
-                        %h6 Money will be automatically tansferred when all of the following conditions are satisfied
-
-                    %ul
-                        - @transfer_conditions[account.id].each do |condition|
-                            - if condition.amount
-                                %li
-                                    Transaction value is at least #{number_to_currency(condition.condition.to_i/100.0, unit: "£")}
-                                    = link_to "clear", delete_pot_condition_path(account.id, condition.id), class: "material-icons text-danger", method: :delete
+                %ul.nav.nav-tabs#settingsTab{"role" => "tablist"}
+                    - @accounts.each_with_index do |account, i|
+                        %li.nav-item{"role" => "presentation"}
+                            = link_to account.name, "#account#{i}", class: "nav-link #{"active" if i == 0}", "data-bs-toggle" => "tab", "id" => "account#{i}-tab", "role" => "tab", "aria-controls" => "account#{i}", "aria-selected" => "#{i == 0 ? "true" : "false"}"
+                .tab-content#settingsTabContent
+                    - @accounts.each_with_index do |account, i|
+                        .tab-pane.fade{"class" => "#{"show active" if i == 0}", "id" => "account#{i}", "role" => "tabpanel", "aria-labelledby" => "account#{i}-tab"}
+                            %h3.my-3 #{account.name}
+                            %h5 Pulsegraph Settings
+                            .my-3
+                                .form-check.form-check-inline.form-switch
+                                    = check_box_tag "pulse-acc-bal#{i}", 1, account.show_balance, class: "form-check-input savings-pot", "data-number": "#{i}"
+                                    = label_tag "pulse-acc-bal#{i}", "Account Balance", class: "form-check-label", "data-bs-toggle" => "tooltip", "title" => "Tick this box if you want to display your balance over the last 6 months on the pulsegraph"
+                                .form-check.form-check-inline.form-switch
+                                    = check_box_tag "pulse-pot-bal#{i}", 1, account.show_pots, class: "form-check-input savings-pot", "data-number": "#{i}"
+                                    = label_tag "pulse-pot-bal#{i}", "Pot Balance", class: "form-check-label", "data-bs-toggle" => "tooltip", "title" => "Tick this box if you want to display your balance over the last 6 months on the pulsegraph"
+                                .form-check.form-check-inline.form-switch
+                                    = check_box_tag "pulse-comb-bal#{i}", 1, account.show_combined, class: "form-check-input savings-pot", "data-number": "#{i}"
+                                    = label_tag "pulse-comb-bal#{i}", "Combined Balance", class: "form-check-label", "data-bs-toggle" => "tooltip", "title" => "Tick this box if you want to display your balance over the last 6 months on the pulsegraph"
+                            %h5 Pot Transfer
+                            .row.my-3
+                                .col-md-6
+                                    = label_tag "savings-pot#{i}", "Savings Pot:", class: "form-label"
+                                    %select.form-select.savings-pot{"data-account" => account.id, "id" => "savings-pot#{i}", "data-number" => i}
+                                        = options_for_select @pots[account.id], "#{account.savings}"
+                                .col-md-6
+                                    = label_tag "threshold_leave#{i.to_s}", "Amount to leave on transfer:", class: "form-label"
+                                    .input-group
+                                        .input-group-text £
+                                        = number_field_tag "threshold_leave#{i}", number_to_currency(@threshold_offset[account.id]/100.0, unit: "", delimiter: ""), step: 0.01, min: 0, class: "form-control savings-pot", "data-number": "#{i}"
+                            - if @transfer_conditions[account.id].count == 0
+                                %h6 No conditions set, no money will be transfered automatically
                             - else
-                                %li
-                                    Transaction description includes #{condition.condition}
-                                    = link_to "clear", delete_pot_condition_path(account.id, condition.id), class: "material-icons text-danger", method: :delete
-                    
-                    %h6 Add a new condition
-                    %p
-                        = form_with(url: create_pot_condition_path(account.id), local: true) do |form|
-                            .form-group.form-check
-                                = form.check_box "amount#{account.id}", class: "form-check-input"
-                                = form.label "amount#{account.id}", "Based on transaction value?", class: "form-check-label", "data-toggle" => "tooltip", "title" => "Tick this box if this condition is based on the value of the transaction, or leave it unchecked if its based on the description of the transaction"
-                            .form-group
-                                = form.text_field "target#{account.id}", placeholder: "Minumum amount (in £'s) or Description text", class: "form-control", "data-toggle" => "tooltip", "title" => "If the condition is based on the description, it will match anything in the description before and after this condition"
-                            .form-group
-                                = form.submit "Add condition", class: "btn btn-primary"
-                    %hr.my-4
+                                %h6 Money will be automatically tansferred when all of the following conditions are satisfied
+
+                            %ul
+                                - @transfer_conditions[account.id].each do |condition|
+                                    - if condition.amount
+                                        %li
+                                            = link_to "clear", delete_pot_condition_path(account.id, condition.id), class: "material-icons text-danger", method: :delete, "style" => "text-decoration: none"
+                                            Transaction value is at least #{number_to_currency(condition.condition.to_i/100.0, unit: "£")}
+                                    - else
+                                        %li
+                                            = link_to "clear", delete_pot_condition_path(account.id, condition.id), class: "material-icons text-danger", method: :delete, "style" => "text-decoration: none"
+                                            Transaction description includes #{condition.condition}
+                            
+                            %h6 Add a new condition
+                            %p
+                                = form_with(url: create_pot_condition_path(account.id), local: true) do |form|
+                                    .form-switch.form-check
+                                        = form.check_box "amount#{account.id}", class: "form-check-input savings-condition-toggle", "data-number": "#{account.id}"
+                                        = form.label "amount#{account.id}", "Based on transaction value?", class: "form-check-label", "data-bs-toggle" => "tooltip", "title" => "Tick this box if this condition is based on the value of the transaction, or leave it unchecked if its based on the description of the transaction"
+                                    .form-group.my-3
+                                        .input-group{"id" => "target-group#{account.id}"}
+                                            = form.text_field "target#{account.id}", placeholder: "Description contains", class: "form-control", "data-bs-toggle" => "tooltip", "title" => "If the condition is based on the description, it will match anything in the description before and after this condition"
+                                    .form-group
+                                        = form.submit "Add condition", class: "btn btn-primary"
+                %hr
                 = link_to "Update Accounts", update_accounts_path, class: "btn btn-primary btn-lg"

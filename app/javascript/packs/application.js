@@ -8,7 +8,6 @@
 require("@rails/ujs").start()
 require("turbolinks").start()
 require("channels")
-require("bootstrap/dist/js/bootstrap")
 require("chartkick")
 require("chart.js")
 
@@ -23,23 +22,36 @@ require("chart.js")
 
 document.addEventListener("turbolinks:load", function() {
 
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+    var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+        return new bootstrap.Dropdown(dropdownToggleEl)
     })
     
     $('.savings-pot').on('change', function(){
-        console.log("fired");
-        update_savings($(this).data("number"));
-    });
-
-    function update_savings(savings_number) {
-        console.log(savings_number)
+        var account_number = $(this).data("number");
         $.ajax({
             type: 'PATCH',
-            url: "/account/" + $("#savings-pot"+savings_number).data("account"),
-            data : JSON.stringify({"savings": $("#savings-pot"+savings_number).val(), "threshold_offset": $("#threshold_leave"+savings_number).val()*100, "show_balance": $("#pulse-acc-bal"+savings_number).is(":checked"), "show_pots": $("#pulse-pot-bal"+savings_number).is(":checked"), "show_combined": $("#pulse-comb-bal"+savings_number).is(":checked")}),
+            url: "/account/" + $("#savings-pot"+account_number).data("account"),
+            data : JSON.stringify({"savings": $("#savings-pot"+account_number).val(), "threshold_offset": $("#threshold_leave"+account_number).val()*100, "show_balance": $("#pulse-acc-bal"+account_number).is(":checked"), "show_pots": $("#pulse-pot-bal"+account_number).is(":checked"), "show_combined": $("#pulse-comb-bal"+account_number).is(":checked")}),
         });
-    };
+    });
+    
+    $('.savings-condition-toggle').on('change', function(){
+        var account_number = $(this).data("number")
+        if ($(this).is(":checked")){
+            $('#target-group'+account_number).prepend('<div class="input-group-text" id="target-symbol'+account_number+'">£</div>');
+            $('#target'+account_number).attr('placeholder', "Minimum amount");
+        } else {
+            $('#target-symbol'+account_number).remove();
+            $('#target'+account_number).attr('placeholder', "Description contains");
+        }
+    });
+
     $('.transfer-balance').on('click', function() {
         if (confirm('This will transfer ' + $(this).data("amount-with-currency") + " to your designated savings pot")) { 
             alert('Now transfering money, please wait.');

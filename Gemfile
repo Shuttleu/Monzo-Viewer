@@ -31,8 +31,6 @@ gem 'simple_form'
 
 gem 'rest-client'
 
-gem 'bootstrap'
-
 gem 'jquery-rails'
 
 gem 'bcrypt' 
