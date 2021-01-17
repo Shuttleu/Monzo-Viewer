@@ -109,10 +109,12 @@ class AccountController < ApplicationController
         @pots = {}
         @transfer_conditions = {}
         @threshold_offset = {}
+        @pulse_display = {}
         @accounts.each do |account|
             @transfer_conditions[account.id] = account.conditions
             @threshold_offset[account.id] = account.threshold_offset
             @pots[account.id] = []
+            @pulse_display[account.id] = account.pulse_display
             account.pots.where("display" => true).each do |pot|
                 @pots[account.id] << [pot.name, pot.id]
             end
@@ -128,7 +130,7 @@ class AccountController < ApplicationController
         
         values = JSON.parse(request.raw_post)
         current_account = current_user.accounts.find(params[:id])
-        current_account.update_attributes(values)
+        current_account.update(values)
 
     end
 
@@ -203,11 +205,11 @@ class AccountController < ApplicationController
         temp_transactions_roundups =  temp_transactions_w_pots.where("pot_transfer" => true)
         temp_transactions = temp_transactions_w_pots.where("pot_transfer" => false).reverse_order
 
-        last_60_balance = {}
-        last_60_balance_w_pots = {}
-        last_60_balance_only_pots = {}
+        graph_balance = {}
+        graph_balance_w_pots = {}
+        graph_balance_only_pots = {}
 
-        last_60 = []
+        graph = []
 
         current_balance = account.balance
         current_balance_w_pots = account.balance
@@ -217,11 +219,13 @@ class AccountController < ApplicationController
             current_balance_only_pots += pot.current
         end
 
-        last_60_balance[DateTime.current.beginning_of_day.strftime('%d-%m-%Y')] = current_balance/100.0
-        last_60_balance_w_pots[DateTime.current.beginning_of_day.strftime('%d-%m-%Y')] = current_balance_w_pots/100.0
-        last_60_balance_only_pots[DateTime.current.beginning_of_day.strftime('%d-%m-%Y')] = current_balance_only_pots/100.0
+        graph_balance[DateTime.current.beginning_of_day.strftime('%d-%m-%Y')] = current_balance/100.0
+        graph_balance_w_pots[DateTime.current.beginning_of_day.strftime('%d-%m-%Y')] = current_balance_w_pots/100.0
+        graph_balance_only_pots[DateTime.current.beginning_of_day.strftime('%d-%m-%Y')] = current_balance_only_pots/100.0
+        
+        months = account.pulse_display * 30
 
-        for i in 0..179 do
+        for i in 0..months do
             day = DateTime.current.beginning_of_day.ago(3600*24*i)
 
             transactions_for_day = temp_transactions.where(:day => day)
@@ -240,18 +244,18 @@ class AccountController < ApplicationController
                     current_balance_only_pots += transaction.amount
                 end
             end
-            last_60_balance[day.ago(3600*24).strftime('%d-%m-%Y')] = current_balance/100.0
-            last_60_balance_w_pots[day.ago(3600*24).strftime('%d-%m-%Y')] = current_balance_w_pots/100.0
-            last_60_balance_only_pots[day.ago(3600*24).strftime('%d-%m-%Y')] = current_balance_only_pots/100.0
+            graph_balance[day.ago(3600*24).strftime('%d-%m-%Y')] = current_balance/100.0
+            graph_balance_w_pots[day.ago(3600*24).strftime('%d-%m-%Y')] = current_balance_w_pots/100.0
+            graph_balance_only_pots[day.ago(3600*24).strftime('%d-%m-%Y')] = current_balance_only_pots/100.0
 
         end
 
         
-        last_60 << {"name": "Account", "data": last_60_balance.reverse_each} if account.show_balance
-        last_60 << {"name": "Pots", "data": last_60_balance_only_pots.reverse_each} if account.show_pots
-        last_60 << {"name": "Combined", "data": last_60_balance_w_pots.reverse_each} if account.show_combined
+        graph << {"name": "Account", "data": graph_balance.reverse_each} if account.show_balance
+        graph << {"name": "Pots", "data": graph_balance_only_pots.reverse_each} if account.show_pots
+        graph << {"name": "Combined", "data": graph_balance_w_pots.reverse_each} if account.show_combined
 
-        render json: last_60
+        render json: graph
     end
     
     def view

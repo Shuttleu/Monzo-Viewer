@@ -40,6 +40,10 @@
                                 .form-check.form-check-inline.form-switch
                                     = check_box_tag "pulse-comb-bal#{i}", 1, account.show_combined, class: "form-check-input savings-pot", "data-number": "#{i}"
                                     = label_tag "pulse-comb-bal#{i}", "Combined Balance", class: "form-check-label", "data-bs-toggle" => "tooltip", "title" => "Tick this box if you want to display your balance over the last 6 months on the pulsegraph"
+                                .row
+                                    .col
+                                        = label_tag "pulse-display#{i}", "Months to display on pulse graph:", class: "form-label"
+                                        = number_field_tag "pulse-display#{i}", @pulse_display[account.id], step: 1, min: 1, class: "form-control savings-pot", "data-number": "#{i}"
                             %h5 Pot Transfer
                             .row.my-3
                                 .col-md-6

@@ -1,17 +1,17 @@
-#    This file is part of Monzo-Viewer.
+-#    This file is part of Monzo-Viewer.
 
-#    Monzo-Viewer is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    any later version.
+-#    Monzo-Viewer is free software: you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation, either version 3 of the License, or
+-#    any later version.
 
-#    Monzo-Viewer is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+-#    Monzo-Viewer is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
 
-#    You should have received a copy of the GNU General Public License
-#    along with Monzo-Viewer.  If not, see <https://www.gnu.org/licenses/>.
+-#    You should have received a copy of the GNU General Public License
+-#    along with Monzo-Viewer.  If not, see <https://www.gnu.org/licenses/>.
 
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
@@ -25,7 +25,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_16_124306) do
+ActiveRecord::Schema.define(version: 2021_01_17_221828) do
 
   create_table "accounts", id: :string, force: :cascade do |t|
     t.string "user_id"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 2021_01_16_124306) do
     t.boolean "show_balance"
     t.boolean "show_pots"
     t.boolean "show_combined"
+    t.integer "pulse_display"
   end
 
   create_table "conditions", id: :string, force: :cascade do |t|

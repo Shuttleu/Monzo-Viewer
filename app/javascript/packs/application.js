@@ -37,7 +37,12 @@ document.addEventListener("turbolinks:load", function() {
         $.ajax({
             type: 'PATCH',
             url: "/account/" + $("#savings-pot"+account_number).data("account"),
-            data : JSON.stringify({"savings": $("#savings-pot"+account_number).val(), "threshold_offset": $("#threshold_leave"+account_number).val()*100, "show_balance": $("#pulse-acc-bal"+account_number).is(":checked"), "show_pots": $("#pulse-pot-bal"+account_number).is(":checked"), "show_combined": $("#pulse-comb-bal"+account_number).is(":checked")}),
+            data : JSON.stringify({"savings": $("#savings-pot"+account_number).val(),
+                "threshold_offset": $("#threshold_leave"+account_number).val()*100,
+                "show_balance": $("#pulse-acc-bal"+account_number).is(":checked"),
+                "show_pots": $("#pulse-pot-bal"+account_number).is(":checked"),
+                "show_combined": $("#pulse-comb-bal"+account_number).is(":checked"),
+                "pulse_display": $("#pulse-display"+account_number).val()})
         });
     });
     
