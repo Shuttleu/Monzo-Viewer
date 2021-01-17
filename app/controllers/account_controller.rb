@@ -299,7 +299,7 @@ class AccountController < ApplicationController
             elsif @current_page == pages-2
                 @view_pages << pages-3
             end
-            if @current_page == pages-3 || @current_page == pages-2
+            if @current_page == pages-2 || @current_page == pages-1
                 @view_pages << pages-2
             end
             for i in pages-1..pages do
